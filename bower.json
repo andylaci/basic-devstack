@@ -1,5 +1,5 @@
 {
-  "name": "minimalistic-react",
+  "name": "basic-devstack",
   "authors": [
     "Andrej Lacko <lacko.andy@gmail.com>"
   ],
@@ -16,9 +16,5 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "bootstrap": "~3.3.6",
-    "jquery": "~2.2.3",
-    "react": "~15.0.2"
-  }
+  "dependencies": {}
 }

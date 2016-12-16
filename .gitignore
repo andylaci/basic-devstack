@@ -8,5 +8,8 @@ ehthumbs.db
 Thumbs.db
 
 node_modules/
-build/
-lib/
+/assets/lib/
+tmp/
+documents/
+public/css
+public/js
