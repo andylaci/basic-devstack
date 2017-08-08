@@ -15,6 +15,8 @@
     "app" : [
       "index.scss"
     ],
-    "lib": []
+    "lib": [
+      "normalize-css/normalize.css"
+    ]
   }
 }

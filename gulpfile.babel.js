@@ -7,7 +7,7 @@ import urlAdjuster from 'gulp-css-url-adjuster';
 import concat from 'gulp-concat';
 import uglify from 'gulp-uglify';
 import cleanCss from 'gulp-clean-css';
-import fs from 'fs';
+import fs from 'graceful-fs';
 
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
@@ -17,6 +17,7 @@ import watchify from 'watchify';
 import babelify from 'babelify';
 import gutil from 'gulp-util';
 import reactify from 'reactify';
+import autoprefixer from 'gulp-autoprefixer';
 
 
 
@@ -70,6 +71,10 @@ gulp.task('css', function () {
     .pipe(sass())
     .on('error', swallowError)
     .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+    .pipe(autoprefixer({
+      browsers: ['last 2 versions'],
+      cascade: false
+    }))
     .pipe(urlAdjuster({
       prepend: CONFIG.path.asset_prefix
     }))
@@ -86,7 +91,7 @@ gulp.task('build', function () {
 
 
 
-gulp.task('watch-nobs', function () {
+gulp.task('watch', function () {
   gulp.start(['js', 'css']);
   gulp.watch(CONFIG.path.css + '**/*.scss', ['css']);
 });
@@ -111,7 +116,7 @@ gulp.task('lib', function () {
 });
 
 
-gulp.task('watch', function () {
+gulp.task('serve', function () {
   browserSync.init(null, {
     proxy: `http://localhost:${SERVER_CONFIG.port}`,
     files: ["app/**/*.*"],
@@ -123,4 +128,4 @@ gulp.task('watch', function () {
   gulp.start('watch');
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['serve']);

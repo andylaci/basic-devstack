@@ -10,16 +10,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "gulp": "concurrently --kill-others \"npm run start\" \"npm run watch\"",
-    "watch": "gulp"
+    "watch": "concurrently --kill-others \"npm run start\" \"npm run gulp\"",
+    "gulp": "gulp"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ejs-locals": "^1.0.2",
     "express": "^4.13.4",
-    "express-ejs-layouts": "^2.1.0",
-    "express-logger": "0.0.3"
+    "express-ejs-layouts": "^2.1.0"
   },
   "devDependencies": {
     "babel": "^6.5.2",
@@ -27,18 +26,19 @@
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.3.0",
     "browser-sync": "^2.12.5",
-    "browserify": "^13.0.0",
+    "browserify": "^14.4.0",
     "concurrently": "^3.1.0",
     "fs": "0.0.2",
     "gulp": "^3.9.1",
-    "gulp-clean-css": "^2.0.6",
+    "gulp-autoprefixer": "^4.0.0",
+    "gulp-clean-css": "^3.7.0",
     "gulp-concat": "^2.6.0",
     "gulp-css-url-adjuster": "^0.2.3",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.0.0",
     "gulp-sourcemaps": "^2.0.0-alpha",
     "gulp-streamify": "^1.0.2",
-    "gulp-uglify": "^2.0.0",
+    "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.7",
     "lodash.assign": "^4.0.8",
     "reactify": "^1.1.1",
