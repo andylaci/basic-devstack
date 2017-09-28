@@ -4,7 +4,6 @@
     "css": "assets/css/",
     "js": "assets/js/",
     "build": "public/",
-    "asset_prefix": "../",
     "lib": "assets/lib/"
   },
   "js": {

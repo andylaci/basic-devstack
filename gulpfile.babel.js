@@ -3,7 +3,6 @@
 import gulp from 'gulp';
 import browserSync from 'browser-sync';
 import sass from 'gulp-sass';
-import urlAdjuster from 'gulp-css-url-adjuster';
 import concat from 'gulp-concat';
 import uglify from 'gulp-uglify';
 import cleanCss from 'gulp-clean-css';
@@ -19,11 +18,8 @@ import gutil from 'gulp-util';
 import reactify from 'reactify';
 import autoprefixer from 'gulp-autoprefixer';
 
-
-
 const CONFIG = JSON.parse(fs.readFileSync('./config/gulp.json', 'utf8'));
 const SERVER_CONFIG = JSON.parse(fs.readFileSync('./config/server.json', 'utf8'));
-
 
 function absolutePaths(path, list) {
   return list.map(function (item) {
@@ -31,7 +27,7 @@ function absolutePaths(path, list) {
   })
 }
 
-function swallowError (error) {
+function swallowError(error) {
   console.log(error.toString());
   this.emit('end')
 }
@@ -44,16 +40,23 @@ var customOpts = {
   debug: true
 };
 var opts = Object.assign({}, watchify.args, customOpts);
-var b = watchify(browserify(opts)).transform("babelify", {presets: ["es2015", "react"]});
+var b = (process.env.NODE_ENV == 'production')? browserify(opts).transform("babelify", { presets: ["es2015", "stage-1","react"] }) : watchify(browserify(opts)).transform("babelify", { presets: ["es2015", "react"] });
 
 function bundle() {
+  if (process.env.NODE_ENV == 'production') {
+    return b.bundle()
+      .pipe(source('index.js'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest(CONFIG.path.build + 'js/'));
+  }
   return b.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
     .pipe(source('index.js'))
     .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+    .pipe(sourcemaps.init({ loadMaps: true })) // loads map from browserify file
     // Add transformation tasks to the pipeline here.
-    // .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(CONFIG.path.build + 'js/'))
     .pipe(browserSync.stream());
@@ -67,29 +70,36 @@ b.on('log', gutil.log);
 // CSS ------------------------------------------
 
 gulp.task('css', function () {
-  gulp.src(absolutePaths(CONFIG.path.css, CONFIG.css.app))
-    .pipe(sass())
-    .on('error', swallowError)
-    .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-    .pipe(autoprefixer({
-      browsers: ['last 2 versions'],
-      cascade: false
-    }))
-    .pipe(urlAdjuster({
-      prepend: CONFIG.path.asset_prefix
-    }))
-    // .pipe(cleanCss())
-    .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(CONFIG.path.build + 'css/'))
-    .pipe(browserSync.stream());
+  if (process.env.NODE_ENV == 'production') {
+    gulp.src(absolutePaths(CONFIG.path.css, CONFIG.css.app))
+      .pipe(sass())
+      .on('error', swallowError)
+      .pipe(sourcemaps.init({ loadMaps: true })) // loads map from browserify file
+      .pipe(autoprefixer({
+        browsers: ['last 2 versions'],
+        cascade: false
+      }))
+      .pipe(cleanCss())
+      .pipe(gulp.dest(CONFIG.path.build + 'css/'));
+  } else {
+    gulp.src(absolutePaths(CONFIG.path.css, CONFIG.css.app))
+      .pipe(sass())
+      .on('error', swallowError)
+      .pipe(sourcemaps.init({ loadMaps: true })) // loads map from browserify file
+      .pipe(autoprefixer({
+        browsers: ['last 2 versions'],
+        cascade: false
+      }))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest(CONFIG.path.build + 'css/'))
+      .pipe(browserSync.stream());
+  }
 });
 
 
 gulp.task('build', function () {
-  gulp.start(['js', 'css']);
+  gulp.start(['lib','js', 'css']);
 });
-
-
 
 gulp.task('watch', function () {
   gulp.start(['js', 'css']);
@@ -97,22 +107,29 @@ gulp.task('watch', function () {
 });
 
 gulp.task('lib', function () {
-  gulp.src(
-    absolutePaths(CONFIG.path.lib, CONFIG.js.lib)
-    )
-    .pipe(concat('lib.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest(CONFIG.path.build + 'js/'));
-  
-  gulp.src(
-    absolutePaths(CONFIG.path.lib, CONFIG.css.lib)
-    )
-    .pipe(sourcemaps.init({loadMaps: true}))
-    .pipe(concat('lib.css'))
-    .pipe(cleanCss())
-    .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(CONFIG.path.build + 'css/'));
+  if (process.env.NODE_ENV == 'production') {
+    gulp.src(absolutePaths(CONFIG.path.lib, CONFIG.js.lib))
+      .pipe(concat('lib.js'))
+      .pipe(uglify())
+      .pipe(gulp.dest(CONFIG.path.build + 'js/'));
+    gulp.src(absolutePaths(CONFIG.path.lib, CONFIG.css.lib))
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(concat('lib.css'))
+      .pipe(cleanCss())
+      .pipe(gulp.dest(CONFIG.path.build + 'css/'));
+  } else {
+    gulp.src(absolutePaths(CONFIG.path.lib, CONFIG.js.lib))
+      .pipe(concat('lib.js'))
+      .pipe(uglify())
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest(CONFIG.path.build + 'js/'));
 
+    gulp.src(absolutePaths(CONFIG.path.lib, CONFIG.css.lib))
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(concat('lib.css'))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest(CONFIG.path.build + 'css/'));
+  }
 });
 
 
