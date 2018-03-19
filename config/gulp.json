@@ -4,18 +4,16 @@
     "css": "assets/css/",
     "js": "assets/js/",
     "build": "public/",
-    "lib": "assets/lib/"
+    "lib": ""
   },
   "js": {
-    "app" : "index.js",
+    "app" : "main.js",
     "lib": []
   },
   "css": {
     "app" : [
       "index.scss"
     ],
-    "lib": [
-      "normalize-css/normalize.css"
-    ]
+    "lib": []
   }
 }

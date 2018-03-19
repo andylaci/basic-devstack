@@ -19,7 +19,6 @@ import reactify from 'reactify';
 import autoprefixer from 'gulp-autoprefixer';
 
 const CONFIG = JSON.parse(fs.readFileSync('./config/gulp.json', 'utf8'));
-const SERVER_CONFIG = JSON.parse(fs.readFileSync('./config/server.json', 'utf8'));
 
 function absolutePaths(path, list) {
   return list.map(function (item) {
@@ -45,7 +44,7 @@ var b = (process.env.NODE_ENV == 'production')? browserify(opts).transform("babe
 function bundle() {
   if (process.env.NODE_ENV == 'production') {
     return b.bundle()
-      .pipe(source('index.js'))
+      .pipe(source('main.js'))
       .pipe(buffer())
       .pipe(uglify())
       .pipe(sourcemaps.write('./'))
@@ -53,7 +52,7 @@ function bundle() {
   }
   return b.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-    .pipe(source('index.js'))
+    .pipe(source('main.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true })) // loads map from browserify file
     // Add transformation tasks to the pipeline here.
@@ -135,10 +134,10 @@ gulp.task('lib', function () {
 
 gulp.task('serve', function () {
   browserSync.init(null, {
-    proxy: `http://localhost:${SERVER_CONFIG.port}`,
+    proxy: `http://localhost:${3000}`,
     files: ["app/**/*.*"],
     browser: "google chrome",
-    port: CONFIG.port,
+    port: 4141,
     open: false
   });
 
