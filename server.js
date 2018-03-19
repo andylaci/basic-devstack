@@ -12,7 +12,7 @@ var saveStatic = new SaveStatic(__dirname + '/html');
 
 
 app.get('/', function (req, res) {
-  res.render('index', {
+  res.render('home', {
     page: {
       title: 'Home',
     }

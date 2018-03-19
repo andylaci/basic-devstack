@@ -133,7 +133,7 @@ gulp.task('lib', function () {
 
 gulp.task('serve', function () {
   browserSync.init(null, {
-    proxy: `http://localhost:${3000}`,
+    proxy: `http://localhost:3000`,
     files: ["app/**/*.*"],
     browser: "google chrome",
     port: 4141,
