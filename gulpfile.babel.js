@@ -15,7 +15,6 @@ import sourcemaps from 'gulp-sourcemaps';
 import watchify from 'watchify';
 import babelify from 'babelify';
 import gutil from 'gulp-util';
-import reactify from 'reactify';
 import autoprefixer from 'gulp-autoprefixer';
 
 const CONFIG = JSON.parse(fs.readFileSync('./config/gulp.json', 'utf8'));

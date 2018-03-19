@@ -9,8 +9,9 @@ Thumbs.db
 !.gitkeep
 
 node_modules/
-/assets/lib/
+assets/lib/
 tmp/
 documents/
 public/css
 public/js
+yarn.lock
